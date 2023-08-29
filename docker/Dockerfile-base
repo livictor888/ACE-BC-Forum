@@ -1,0 +1,31 @@
+# Use Amazon Linux 2 Docker Image
+FROM amazonlinux:2
+
+# gather dependencies important for geospatial installations
+RUN yum -y update && \
+    yum -y install wget tar.x86_64 gcc-c++ make cmake bzip2 python3-devel openssl-devel && \
+    yum -y install yum-utils && \
+    amazon-linux-extras install epel -y && \
+    yum-config-manager -y --enable epel && \
+    yum-config-manager -y --enable remi && \
+    yum -y install libtiff-devel \
+    libjpeg-turbo-devel \
+    sqlite-devel \
+    gdal \
+    gdal-python \
+    geos \
+    proj \
+    libspatialite \
+    libspatialite-devel \
+    libcurl-devel \
+    postgresql-devel \
+    mysql-devel \
+    yum clean all && \
+    python3 -m pip install --upgrade  pip
+
+# Define the Docker working directory
+WORKDIR /app
+
+# set environment variables (important for making Django run)
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1

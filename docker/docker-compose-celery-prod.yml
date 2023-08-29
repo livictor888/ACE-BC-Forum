@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: celery_beat:latest17
+    command: /start-celerybeat
+    volumes:
+      - .:/app
+    env_file:
+      - ./acebc/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=acebc.settings
+      - RDS_DB_NAME=ebdb
+      - RDS_USERNAME=ebroot
+      - RDS_PASSWORD=ze6maLKyBnebZuX
+      - RDS_HOSTNAME=awseb-e-jmjnpqaw4m-stack-awsebrdsdatabase-sauuycgznwbz.cazwqihawoud.ca-central-1.rds.amazonaws.com
+      - RDS_PORT=3306
+    restart: on-failure # will restart if the images fails
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: celery_worker:latest17
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - ./acebc/.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=acebc.settings
+      - RDS_DB_NAME=ebdb
+      - RDS_USERNAME=ebroot
+      - RDS_PASSWORD=ze6maLKyBnebZuX
+      - RDS_HOSTNAME=awseb-e-jmjnpqaw4m-stack-awsebrdsdatabase-sauuycgznwbz.cazwqihawoud.ca-central-1.rds.amazonaws.com
+      - RDS_PORT=3306
+    depends_on:
+      - celery_beat
+    ports:
+      - "80"
+    restart: on-failure # will restart if the images fails

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block "content" %}
+
+<!-- only user groups with permissions can post to the forum-->
+{% if perms.forum.add_post %}
+
+<div class="container border border-secondary">
+    <form id="post_form" method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% crispy form %}
+        <!-- <input type="submit" name="save_and_continue" class="btn btn-primary mb-3" value="Save & add more media"> -->
+        <button type="submit" name="save_and_continue" class="btn btn-primary mb-3" value="Save & continue editing">Save & add more media</button>
+
+    </form>
+
+</div>
+
+{% else %}
+<h1>Access denied</h1>
+{% endif %}
+
+{% endblock %}

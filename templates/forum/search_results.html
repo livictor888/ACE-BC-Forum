@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+
+<div class="container min-vh-100 d-flex flex-column">
+  <div class="row flex-grow-1">
+
+    {% include "partials/sidebar.html" %}
+
+    <div class="col-md-10 p-2 border border-secondary">
+      <h2 class="post-heading" id="headingOne"
+        style="font-family: 'Montserrat', sans-serif; font-size: larger; font-weight:bold;">
+        {{form}}
+      </h2>
+
+      {% for result in results %}
+      {% if not result.post %}
+      <a class="no-link-decor" href="{% url 'forum:detail' result.pk %}">
+        <div class="card-color-change truncate shadow-sm p-3 mb-2 rounded border border-secondary">
+          {% if result.label == "Meeting-Minutes" %}
+          <div class="rounded-orange-rectangle">
+            <p class="post-label-p">Meeting Minutes</p>
+          </div>
+          {% endif %}
+          {% if result.label == "Discussion" %}
+          <div class="rounded-blue-rectangle">
+            <p class="post-label-p">Discussion</p>
+          </div>
+          {% endif %}
+          {% if result.label == "Resource-Share" %}
+          <div class="rounded-red-rectangle">
+            <p class="post-label-p">Resource Share</p>
+          </div>
+          {% endif %}
+          {% if result.label == "Other" %}
+          <div class="rounded-green-rectangle">
+            <p class="post-label-p">Other</p>
+          </div>
+          {% endif %}
+          <h2 class="post-heading" id="headingOne"
+            style="font-family: 'Montserrat', sans-serif; font-size: larger; font-weight:bold;">
+            {{ result.title |truncatechars_html:90}}
+          </h2>
+          <p style="font-size:medium">{{ result.body | safe |truncatewords_html:45 |truncatechars_html:350 |striptags }}
+          </p>
+          <span style="font-size:small">
+            <strong> Date Posted: </strong> {{ result.date_added }} |
+            {% if result.edited %}
+                <strong> Edited:</strong> {{ result.date_time }} |
+            {% endif %}</strong> <strong>Author:</strong> {{ result.username }} |
+            <strong>Tags:</strong> {{ result.tag }} | <strong>Comments: </strong>{{ result.comments.count }}</span>
+        </div>
+      </a>
+      {% endif %}
+      {% if result.post %}
+      <div class="truncate container-sm shadow-sm p-3 mb-2 bg-body rounded border border-secondary">
+        <a class="no-link-decor" href="{% url 'forum:detail' result.post.pk %}">
+          <strong>
+            <h5 style="color:#4FA39E">{{ result.name }}</h5>
+          </strong>
+          <p style="font-size:medium">{{ result.body |safe |truncatechars_html:90 |cut:"&nbsp;" |striptags }}</p>
+          <span style="font-size:small"><strong> (Comment) Date Posted:</strong> {{ result.date_added }}
+            {% if result.edited %}
+            |<strong> Edited:</strong> {{ result.date_time }}
+            {% endif %}</span>
+
+        </a>
+      </div>
+      {% endif %}
+      {% endfor %}
+
+
+      <div class="pagination-container">
+        <div class="pagination">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .no-link-decor {
+    color: black;
+    text-decoration: none;
+  }
+
+  .no-link-decor :hover {
+    color: black;
+    text-decoration: none;
+  }
+
+  .pagination-container {
+    height: 100;
+    width: 100;
+
+  }
+
+  .post-label-p {
+    margin: 0;
+  }
+
+  .rounded-orange-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: orange;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+
+  .rounded-blue-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgb(130, 195, 111);
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+
+  .rounded-red-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgb(92, 83, 189);
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+
+  .rounded-green-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgb(212, 69, 126);
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+</style>
+
+{% endblock %}

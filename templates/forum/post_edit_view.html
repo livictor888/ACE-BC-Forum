@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block "content" %}
+<div class="container border border-secondary py-4">
+    <h2>Update Post</h2>
+    <form id="post_form" method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% crispy form %}
+
+        <div class="my-4">
+            <h3>Remove Images</h3>
+            {% for image in delete_image_form.images %}
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="delete_images" value="{{ image.id }}" />
+                <label class="form-check-label">
+                    <img src="{{ image.image.url }}" alt="Image" style="max-width: 200px;">
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="my-4">
+            <h3>Remove PDFs</h3>
+            {% for pdf in delete_pdf_form.pdfs %}
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="delete_pdfs" value="{{ pdf.id }}" />
+                <label class="form-check-label">
+                    <a class="remove-pdf-link" href="{{ pdf.upload_pdf.url }}" target="_blank">
+                        {{pdf.get_short_filename}}
+                    </a>
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-secondary mb-3" onclick="window.history.back();">
+            Cancel
+        </button>
+        <button type="submit" class="btn btn-primary mb-3">Submit</button>
+        <button type="submit" name="save_and_continue" class="btn btn-primary mb-3" value="Save & continue editing">Save & continue editing</button>
+
+    </form>
+</div>
+
+<style>
+    .remove-pdf-link {
+        color: teal;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

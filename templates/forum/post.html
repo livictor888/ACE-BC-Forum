@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+<div class="container post-header border border-secondary">
+    <!-- this doesn't change throughout the sliding -->
+    <strong>
+        <h5 style="color:#4FA39E">{{ post.username }}</h5>
+    </strong>
+    <div style="display: flex; justify-content: space-between;">
+
+
+        <h2 class="post-heading" id="headingOne"
+            style="font-family: 'Montserrat', sans-serif; font-size: larger; font-weight:bold;">
+            {{ post.title |truncatechars_html:90}}
+        </h2>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            {% if upload and UploadPDF or upload and post.youtube or upload and post.body or UploadPDF and post.youtube or UploadPDF and post.body or post.youtube and post.body %}
+            <div id="toggle_text"
+                 style="border: 1px solid #ccc; padding: 10px; background-color: #f8f9fa; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); margin-right: 20px;">
+            </div>
+            <!-- Rest of your HTML code for buttons -->
+            <button class="w3-display-left arrow-buttons btn btn-lg btn-light" onclick="plusDivs(-1)"
+                    style="font-weight:bolder; font-size:xx-large; display:inline-flex; align-items: center;justify-content: center;">&#10094;</button>
+            <button class="w3-display-right arrow-buttons btn btn-lg btn-light" onclick="plusDivs(+1)"
+                    style="font-weight:bolder; font-size:xx-large; display:inline-flex;  align-items: center;justify-content: center;">&#10095;</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- this doesn't change throughout the sliding -->
+
+    <!-- creates one card that holds all slides -->
+    <div class="card">
+        <div class="card-body">
+            <!-- slide begins example-->
+            {% if post.body != "" %}
+
+            <div class="slides" style="overflow-y: auto; min-height: 400px; max-height: 400px; white-space: pre-line;">
+                <p>{{ post.body|safe }}</p>
+
+            </div>
+            {% endif %}
+            <!-- slide ends-->
+
+            <!-- image slides -->
+            {% if upload %}
+            <div class="mt-3">
+                {% for p in upload %}
+                <div class="slides">
+                    <div class="mt-2 text-center">
+                        <img height="400" src="{{ p.image.url }}">
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- pdf slides, embedded pdf -->
+
+            {% if UploadPDF %}
+            {% for pdf in UploadPDF %}
+
+            <p>{{count}}</p>
+
+            <div class="slides">
+                <div class="mt-3 text-center">
+                    <div id="adobe-dc-view{{forloop.counter}}" style="height:400px;"></div>
+                    <script src="https://documentservices.adobe.com/view-sdk/viewer.js"></script>
+                    <script type="text/javascript">
+                        document.addEventListener("adobe_dc_view_sdk.ready", function () {
+                            var adobeDCView = new AdobeDC.View({ clientId: "{{ adobe_api_key }}", divId: "adobe-dc-view{{forloop.counter}}" });
+                            adobeDCView.previewFile({
+                                content: {
+                                    location:
+                                        { url: "{{ pdf.upload_pdf.url|safe }}" }
+                                },
+                                metaData: { fileName: "{{ pdf }}" }
+                            },
+                                {
+                                    embedMode: "SIZED_CONTAINER"
+                                });
+                        });
+                    </script>
+                </div>
+            </div>
+
+            {% endfor %}
+            {% endif %}
+
+            {% if post.youtube and post.youtube != "" %}
+            <!-- example displayed video -->
+            <div class="slides">
+                <div class="mt-3 text-center">
+                    <iframe width="711" height="400" src="{{ post.youtube }}" title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="card-footer">
+            <strong>Date Posted: </strong>{{ post.date_added }} |
+            {% if post.edited %}
+            <strong> Edited:</strong> {{ post.date_time }} |
+            {% endif %}
+            <strong>Author: </strong>{{ post.username }} |
+            <strong>Tags: </strong>{{ post.tag }} |
+            <strong>Comments: </strong>{{ post.comments.count }}
+        </div>
+
+    </div>
+
+    <div class="buttons-container">
+
+        <!-- Delete post button -->
+        {% if user.is_authenticated and user.username == post.username or user.groups.all.0.name == 'admin' %}
+        <a href="{% url 'forum:deletepost' post.pk %}" class="btn-modify">
+            <button type="button" class="no-link-decor btn btn-outline-danger btn-modify delete">
+                Delete
+            </button>
+        </a>
+        {% endif %}
+        <!-- Edit post button -->
+        {% if user.is_authenticated and user.username == post.username or user.groups.all.0.name == 'admin' %}
+        <a href="{% url 'forum:editpost' post.pk %}">
+            <button type="button" class="btn btn-outline-dark btn-modify edit-button">
+                Edit
+            </button>
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- <hr> -->
+    <br>
+    <div style="display:flex; justify-content:space-between">
+        <h4>Comments: {{ post.comments.count }}</h4>
+        <button onclick="revealCommentForm()" type="button" class="btn btn-outline-primary main-button">
+            Add Comment
+        </button>
+    </div>
+    <br>
+    <!-- .comments because we set the related_name to comments in models.py -->
+    {% if not post.comments.all %}
+    No Comments Yet...
+    <!-- Add new comment -->
+    <br><br>
+    <div id="comment-hide" style="display: none;">
+        <h5>New Comment:</h5>
+        <div class="comment-body container-sm shadow-sm p-3 mb-2 bg-body border border-secondary">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                {{form}}
+                <br><br>
+                <div style="display: flex; justify-content:end;">
+                    <button style="width: 5rem;" class="btn btn-success">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End of add new comment -->
+
+    {% else %}
+    <!-- Add new comment -->
+    <div id="comment-hide" style="display: none;">
+        <div class=" comment-body container-sm shadow-sm p-3 mb-2 bg-body border border-secondary">
+            <form method="POST" action="#">
+                {% csrf_token %}
+                {{form}}
+                <br><br>
+                <div style="display: flex; justify-content:end;">
+                    <button style="width: 5rem;" class="btn btn-success">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End of add new comment -->
+
+    <!-- comments newest to oldest -->
+    <div class="reverse-order">
+        {% for comment in post_comments %}
+        <div class="truncate comment-body container-sm shadow-sm p-3 mb-2 bg-body border border-secondary">
+            <p style="font-size: 1.3pc;">
+                <strong>
+                    {{ comment.name }}
+                </strong>
+            </p>
+
+            <p style="font-size:large;">
+                {{ comment.body }}
+            </p>
+            <span style="font-size:small">
+                <strong> Date Posted:</strong> {{ comment.date_added }}
+                {% if comment.edited %}
+                |<strong> Edited:</strong> {{ comment.date_time }}
+                {% endif %}
+
+            </span>
+
+
+            <!-- Reply Comment Button -->
+            {% if user.is_authenticated %}
+            <button onclick="revealReplyForm({{ comment.pk }})" type="button"
+                class="btn btn-outline-dark btn-modify edit-button btn-sm">
+                Reply
+            </button>
+            {% endif %}
+
+            <!-- Edit Comment Button -->
+            {% if user.is_authenticated and user.username == comment.name %}
+            <a href="{% url 'forum:edit_comment' post_pk=post.pk comment_pk=comment.pk %}"
+                class="btn btn-outline-dark btn-modify edit-button btn-sm">
+                Edit
+            </a>
+            {% endif %}
+
+            <!-- Delete Comment Button -->
+            {% if user.is_authenticated and user.username == comment.name or user.groups.all.0.name == 'admin' %}
+            <a href="{% url 'forum:delete_comment' post_pk=post.pk comment_pk=comment.pk %}"
+                class="no-link-decor btn btn-outline-danger btn-modify delete btn-sm">
+                Delete
+            </a>
+            {% endif %}
+
+            <!-- Add new comment reply -->
+            <br><br>
+            <div id="reply-hide-{{ comment.pk }}" style="display: none;">
+                <h5>Reply to this comment:</h5>
+                <div class="comment-body container-sm shadow-sm p-3 mb-2 bg-body border border-secondary">
+                    <form method="POST" action="#">
+                        {% csrf_token %}
+                        {{reply_form}}
+                        <input type="hidden" name="comment_pk" value="{{ comment.pk }}">
+                        <br><br>
+                        <div style="display: flex; justify-content:end;">
+                            <button style="width: 5rem; margin-right: 10px;" class="btn btn-secondary"
+                                onclick="event.preventDefault(); revealReplyForm({{ comment.pk }});">Cancel</button>
+                            <br>
+                            <button style="width: 5rem" class="btn btn-primary">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- End of add new comment reply -->
+
+            <!-- Display replies for the comment -->
+            {% for reply in comment.replies.all %}
+            <div class="reply">
+                <p style="font-size: 1.3pc;">
+                    <strong>
+                        {{ reply.name }}
+                    </strong>
+                </p>
+
+                <p style="font-size:large;">
+                    {{ reply.body }}
+                </p>
+                <span style="font-size:small">
+                    <strong> Replied:</strong> {{ reply.date_added }}
+                    {% if reply.edited %}
+                    <strong> Edited:</strong> {{ reply.date_time }}
+                    {% endif %}
+                </span>
+                <!-- Edit Comment Reply Button -->
+                {% if user.is_authenticated and user.username == reply.name %}
+                <a href="{% url 'forum:edit_comment_reply' post_pk=post.pk comment_reply_pk=reply.pk %}"
+                    class="btn btn-outline-dark btn-modify edit-button btn-sm">
+                    Edit
+                </a>
+                {% endif %}
+
+                <!-- Delete Comment Reply Button -->
+                {% if user.is_authenticated and user.username == reply.name or user.groups.all.0.name == 'admin' %}
+                <a href="{% url 'forum:delete_comment_reply' post_pk=post.pk comment_reply_pk=reply.pk %}"
+                    class="no-link-decor btn btn-outline-danger btn-modify delete btn-sm">
+                    Delete
+                </a>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+            <!-- End display replies -->
+
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+    .arrow-buttons {
+        background-color: none;
+        width: 2pc;
+        height: 3pc;
+    }
+
+    .post-header {
+        padding-top: 1pc;
+    }
+
+    .buttons-container {
+        display: flex;
+        justify-content: end;
+        padding-top: 1pc
+    }
+
+    .buttons-container .btn-modify {
+        margin-left: 1pc;
+    }
+
+    .buttons-container .btn-modify :hover {
+        color: white;
+        background-color: #F36A71;
+    }
+
+    .edit-button:hover {
+        background-color: #6e6e6e;
+        border-color: #6e6e6e;
+    }
+
+    .main-button {
+        background-color: #319593;
+        color: white;
+        border: none;
+    }
+
+    .main-button:hover {
+        background-color: #077a78;
+    }
+
+    .reply {
+        background-color: #f8f8f8;
+        border: 1px solid #ccc;
+        padding: 0.5em;
+        margin-bottom: 2em;
+        font-size: large;
+    }
+</style>
+
+<script>
+    // code for going through the slides in posts
+    var slideIndex = 0;
+    showDivs(slideIndex);
+
+    function plusDivs(n) {
+        showDivs(slideIndex += n);
+    }
+
+    // function showDivs(n) {
+    //     var i;
+    //     var x = document.getElementsByClassName("slides");
+    //     if (n > x.length) { slideIndex = n - 1 }
+    //     if (n < 1) { slideIndex = 1 };
+    //     for (i = 0; i < x.length; i++) {
+    //         x[i].style.display = "none";
+    //     }
+    //     x[slideIndex - 1].style.display = "block";
+    // }
+
+    function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("slides");
+        var p = document.getElementById("toggle_text"); // get the paragraph element
+        if (x.length > 1) {
+            p.innerHTML = "Flip to see added media"; // update the text if slides exist
+        }
+        if (n > x.length) { slideIndex = n - 1 }
+        if (n < 1) { slideIndex = 1 };
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        if (x[slideIndex - 1]) { // check if the element exists before trying to change style
+            x[slideIndex - 1].style.display = "block";
+        }
+    }
+
+
+    // comment section pops out
+    function revealCommentForm() {
+        var y = document.getElementById("comment-hide");
+        if (y.style.display === "none") {
+            y.style.display = "block";
+        } else {
+            y.style.display = "none";
+        }
+    }
+
+    // reply to comment section pops out
+    function revealReplyForm(commentPk) {
+        var y = document.getElementById("reply-hide-" + commentPk);
+        if (y.style.display === "none") {
+            y.style.display = "block";
+        } else {
+            y.style.display = "none";
+        }
+    }
+
+</script>
+{% endblock %}

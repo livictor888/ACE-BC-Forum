@@ -1,0 +1,21 @@
+# Use Base Image
+FROM mahanzadeh/cope:newbase
+
+# copy requirements.txt to the Docker workdir and install all dependencies
+COPY requirements.txt /app/requirements.txt
+RUN python3 -m pip install -r requirements.txt
+
+
+RUN yum -y install openssl-static && \
+    export PYCURL_SSL_LIBRARY=openssl && \
+    pip3 install pycurl==7.43.0.5 --global-option="--with-openssl" --upgrade
+
+# copy project
+COPY . /app/
+
+# port where the Django app runs
+EXPOSE 8000
+# AWS Elastic Beanstalk wants port 80 open too
+EXPOSE 80
+
+# Use docker-compose to run the Django app

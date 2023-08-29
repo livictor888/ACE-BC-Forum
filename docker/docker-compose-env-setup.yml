@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+   web:
+       build: .
+       image: kolss/cope:base-python
+       command: python3 manage.py runserver 0.0.0.0:8000
+       ports:
+           - 80:8000

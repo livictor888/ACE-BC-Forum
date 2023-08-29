@@ -1,0 +1,59 @@
+<!-- 404.html -->
+{% load static %}
+<!-- Make sure user is logged in -->
+{% if user.is_authenticated %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Use set head and logo/profile picture from partials -->
+    {% include "partials/head.html" %}
+    <title>COPE</title>
+    {% include "partials/logo_and_pfp.html" %}
+</head>
+
+<body class="bg-light">
+    <!-- <button type="submit" class="btn btn-primary">Subscribe</button> -->
+
+    <!-- Admin header, displays everything including create posts and manage users -->
+    {% include "partials/header.html" %}
+    <h1>Page Not Found</h1>
+    <p>Sorry, but the page you were trying to view <b>does not exist</b>. Please double-check the URL for any typos or
+        navigate
+        to the intended page from here.</p>
+    {% block "content" %}
+    {% endblock %}
+    {% include "partials/footer.html" %}
+</body>
+
+</html>
+
+{% else %}
+<!-- User not logged in -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% include "partials/head.html" %}
+    <title>Log In</title>
+
+</head>
+
+<body class="bg-light">
+    <div class="container" style="max-width: 35rem; padding: 0rem;">
+        <!-- Tell user to sign in -->
+        <h2 style="margin-bottom:-1rem;"><img class="mb-4" src="{% static 'images/logo.png' %}" alt="" width="72"> You
+            need to be signed in</h2>
+        <!-- Send user to log in page -->
+        <h4 class="click-signin">Click <a href="/login">here</a> to sign in</h4>
+        <h4 class="click-register">Click <a href="/signup">here</a> to register</h4>
+
+        {% include "partials/footer.html" %}
+    </div>
+
+</body>
+
+</html>
+
+{% endif %}

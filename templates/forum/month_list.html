@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+
+<div class="container min-vh-100 d-flex flex-column">
+  <div class="row flex-grow-1">
+
+    {% include "partials/sidebar.html" %}
+
+    <div class="col-md-10 p-2 border border-secondary">
+
+      <!-- Month -->
+      {% for month_num, month_name in months.items %}
+      <a type="button" href="{% url 'forum:archive' year month_num %}"
+        class="card-color-change shadow-sm p-3 mb-5 rounded border border-secondary d-flex justify-content-center no-link-decor">
+        <h2>
+          <button class="no-link-decor stonger-looking-heading accordion-button collapsed" aria-controls="collapseOne"
+            style="padding: 3pc; font-size: xx-large;">
+            {{month_name}}
+          </button>
+        </h2>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .no-link-decor {
+    color: black;
+    text-decoration: none;
+  }
+
+  .no-link-decor :hover {
+    color: black;
+    text-decoration: none;
+  }
+</style>
+
+{% endblock %}

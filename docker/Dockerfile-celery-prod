@@ -1,0 +1,20 @@
+# Use Base Python Image
+FROM 677125173008.dkr.ecr.ca-central-1.amazonaws.com/cope:celerybase11
+
+# copy project
+COPY . /app/
+
+ENV DJANGO_SETTINGS_MODULE=acebc.settings
+
+COPY ./celery/worker/start /start-celeryworker
+RUN sed -i 's/\r$//g' /start-celeryworker && sed -i 's/\r\n//g' /start-celeryworker
+RUN chmod +x /start-celeryworker
+
+
+COPY ./celery/beat/start /start-celerybeat
+RUN sed -i 's/\r$//g' /start-celerybeat && sed -i 's/\r\n//g' /start-celerybeat
+RUN chmod +x /start-celerybeat
+
+# port where the Django app runs
+EXPOSE 80
+EXPOSE 8000

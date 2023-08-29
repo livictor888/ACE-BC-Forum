@@ -1,0 +1,89 @@
+[
+    {
+        "model": "auth.group",
+        "pk": 1,
+        "fields": {
+            "name": "admin",
+            "permissions": [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+                21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 2,
+        "fields": {
+            "name": "creator",
+            "permissions": [
+                1, 4, 5, 8, 9, 12, 13, 16, 17, 20,
+                21, 24, 25, 28, 29, 32, 33, 36, 37, 40
+            ]
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 3,
+        "fields": {
+            "name": "viewer",
+            "permissions": [
+                4, 8, 12, 16, 20,
+                24, 28, 32, 36, 40
+            ]
+        }
+    },
+    {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+        "name": "faculty",
+        "permissions": [
+            1, 4, 5, 8, 9, 12, 13, 16, 17, 20,
+            21, 24, 25, 28, 37, 40
+        ]
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+        "name": "service_provider",
+        "permissions": [
+            1, 4, 5, 8, 9, 12, 13, 16, 17, 20,
+            21, 24, 25, 28, 37, 40
+        ]
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 6,
+    "fields": {
+        "name": "student",
+        "permissions": [
+            1, 4, 5, 8, 9, 12, 13, 16, 17, 20,
+            21, 24, 25, 28, 37, 40
+        ]
+    }
+},
+    {
+        "model": "users.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$Xc967Bhgf913CJsDJq833F$vlXbxTaixTs2J90XhpNe6r2GyEI4nTMH60V5wmsfLLY=",
+            "last_login": null,
+            "is_superuser": true,
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "email": "winter2023practicum@gmail.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2022-10-12T00:12:55.174Z",
+            "groups": [
+                1
+            ],
+            "user_permissions": [],
+            "is_subscribed": false
+        }
+    }
+]

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+<div class="container post-header border border-secondary">
+    <form method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to delete the post <strong>"{{ object.title }}"</strong>?
+            <br /><br />Comments and replies on the post will also be deleted.<br />
+        </p>
+        <button type="button" class="btn btn-secondary mb-3" onclick="window.history.back();">
+            Cancel
+        </button>
+        <button type="submit" class="btn btn-danger mb-3">
+            Confirm
+        </button>
+    </form>
+</div>
+{% endblock %}

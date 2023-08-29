@@ -1,0 +1,66 @@
+{% load static %}
+<!-- Body -->
+<div class="container-sm shadow-sm rounded-top border border-secondary">
+    <header>
+        <nav class="navbar navbar-expand-sm">
+            <div class="navbar-nav">
+                <a class="nav-link header-text" href="/">Home</a>
+                <a class="nav-link header-text" href="{% url 'forum:yearlist' %}">Archives</a>
+                <!-- <a class="nav-link header-text" href="{% url 'forum:list' %}">List of posts</a> -->
+
+                {% if perms.forum.add_post %}
+                <a class="nav-link header-text" href="{% url 'forum:create' %}">Create Post</a>
+                {% endif %}
+
+                {% if request.user.groups.all.0.name == 'admin' %}
+                <a class="nav-link header-text" href="/users">Manage Users</a>
+                {% endif %}
+
+                <a class="nav-link header-text" href="/forum/advsearch">Advanced Search</a>
+
+
+            </div>
+        </nav>
+    </header>
+</div>
+
+<!-- bootstrap info:
+      container-sm : for responsive middle container
+      shadow-sm p-3 mb-5: for a small shadow behind card
+      bg-body rounded: rounded look at the corners
+-->
+
+<!-- #4FA39E -->
+<style>
+    /* ------------------- */
+    .navbar-nav,
+    header {
+        background-color: #4FA39E;
+    }
+
+    .navbar-nav a {
+        margin-right: 0.5pc;
+    }
+
+    .header-text {
+        font-family: 'Montserrat', sans-serif;
+        color: white;
+        font-size: 110%;
+        font-weight: bolder;
+
+    }
+
+    .header-text:hover {
+        color: #ffd45f;
+
+    }
+
+    .container-sm {
+        background-color: #4FA39E;
+    }
+
+    /* .container {
+        display: flex;
+        justify-content: flex-end;
+    } */
+</style>

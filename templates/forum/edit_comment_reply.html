@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block "content" %}
+<div class="container border border-secondary">
+    <h2>Update Comment Reply</h2>
+    <form id="post_form" method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% crispy form %}
+    </form>
+
+</div>
+
+{% endblock %}

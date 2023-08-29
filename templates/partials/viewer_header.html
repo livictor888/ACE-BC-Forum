@@ -1,0 +1,18 @@
+<!-- Body -->
+<div class="container-sm shadow-sm bg-body rounded-top border border-secondary">
+    <header>
+        <nav class="navbar navbar-expand-sm">
+            <div class="navbar-nav">
+                <a class="nav-link header-text" href="/">Home</a>
+                <a class="nav-link header-text" href="{% url 'forum:yearlist' %}">Archives</a>
+                <a class="nav-link header-text" href="{% url 'forum:list' %}">List of posts</a>
+            </div>
+        </nav>
+    </header>
+</div>
+
+<!-- bootstrap info:
+      container-sm : for responsive middle container
+      shadow-sm p-3 mb-5: for a small shadow behind card
+      bg-body rounded: rounded look at the corners
+-->

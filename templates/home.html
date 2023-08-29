@@ -1,0 +1,246 @@
+<!-- Add these links to your HTML template -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+{% extends "base.html" %}
+
+{% block "content" %}
+
+<!--Sidebar-->
+<div class="container min-vh-100 d-flex flex-column">
+  <div class="row flex-grow-1">
+
+
+    <!-- {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %} -->
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <!-- Hidden modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="successModalLabel">Success!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{ message }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End of hidden modal -->
+    <!-- Script to show the modal -->
+    <script>
+      $(document).ready(function () {
+        $('#successModal').modal('show');
+        setTimeout(function () {
+          $('#successModal').modal('hide');
+        }, 3000); // hide after 3 seconds
+      });
+    </script>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    {% include "partials/sidebar.html" %}
+
+    <!--Archives container-->
+    <div class="col-md-10 p-2 border border-secondary">
+      <br>
+
+      <h3>Announcements</h3>
+      {% for post in announcements %}
+      <a href="/forum/{{ post.id }}/" class="no-link-decor">
+
+        <div class="truncate shadow-sm p-3 mb-2 rounded border border-secondary card-color-change">
+          <strong>
+            <h5 style="color:#4FA39E">{{ post.username }}</h5>
+          </strong>
+          {% if post.label == "Meeting-Minutes" %}
+          <div class="rounded-orange-rectangle">
+            <p class="post-label-p">Meeting Minutes</p>
+          </div>
+          {% endif %}
+          {% if post.label == "Discussion" %}
+          <div class="rounded-blue-rectangle">
+            <p class="post-label-p">Discussion</p>
+          </div>
+          {% endif %}
+          {% if post.label == "Resource-Share" %}
+          <div class="rounded-red-rectangle">
+            <p class="post-label-p">Resource Share</p>
+          </div>
+          {% endif %}
+          {% if post.label == "Other" %}
+          <div class="rounded-green-rectangle">
+            <p class="post-label-p">Other</p>
+          </div>
+          {% endif %}
+          <h2 class="post-heading" id="headingOne"
+            style="font-family: 'Montserrat', sans-serif; font-size: larger; font-weight:bold;">{{ post.title }} </h2>
+          <p style="font-size:medium">{{ post.body | safe |truncatewords_html:45 |truncatechars_html:350 |striptags }}
+          </p>
+
+          <span style="font-size:small"><strong>Date here: </strong> {{ post.date_added }}  {% if post.edited %}
+            | <strong> Edited:</strong> {{ post.date_time }}
+            {% endif %} | <strong>Author:</strong>
+            {{ post.username }} | <strong>Tags: </strong> {{post.tag}} | <strong>Comments: </strong>
+            {{ post.comments.count }}
+          </span>
+        
+        </div>
+      </a>
+      {% endfor %}
+      <!-- Announcements Pagination -->
+      <div class="pagination">
+        <span class="step-links">
+          {% if announcements.has_previous %}
+          <a href="?page={{ announcements.previous_page_number }}">&laquo; first</a>
+          <a href="?page={{ announcements.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+            Page {{ announcements.number }} of {{ announcements.paginator.num_pages }}.
+          </span>
+
+          {% if announcements.has_next %}
+          <a href="?page={{ announcements.next_page_number }}">next</a>
+          <a href="?page={{ announcements.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+      <br>
+      <!-- 10 most recent threads-->
+      <h3>Most Recent</h3>
+      {% for post in regular_posts %}
+      <div class="">
+        <a href="/forum/{{ post.id }}/" class="no-link-decor">
+
+          <div class="card-color-change truncate shadow-sm p-3 mb-2 rounded border border-secondary">
+            <strong>
+              <h5 style="color:#4FA39E">{{ post.username }}</h5>
+            </strong>
+            {% if post.label == "Meeting-Minutes" %}
+            <div class="rounded-orange-rectangle">
+              <p class="post-label-p">Meeting Minutes</p>
+            </div>
+            {% endif %}
+            {% if post.label == "Discussion" %}
+            <div class="rounded-blue-rectangle">
+              <p class="post-label-p">Discussion</p>
+            </div>
+            {% endif %}
+            {% if post.label == "Resource-Share" %}
+            <div class="rounded-red-rectangle">
+              <p class="post-label-p">Resource Share</p>
+            </div>
+            {% endif %}
+            {% if post.label == "Other" %}
+            <div class="rounded-green-rectangle">
+              <p class="post-label-p">Other</p>
+            </div>
+            {% endif %}
+            <h2 class="post-heading" id="headingOne"
+              style="font-family: 'Montserrat', sans-serif; font-size: larger; font-weight:bold;">{{ post.title }} </h2>
+            <p style="font-size:medium">{{ post.body | safe |truncatewords_html:45 |truncatechars_html:350 |striptags }}
+            </p>
+
+            <span style="font-size:small"><strong>Date Posted: </strong> {{ post.date_added }}
+              {% if post.edited %}
+              | <strong> Edited:</strong> {{ post.date_time }}
+              {% endif %} | <strong>Author:</strong>
+              {{ post.username }} | <strong>Tags: </strong> {{post.tag}} | <strong>Comments: </strong>{{ post.comments_count }}
+            </span>
+          
+          </div>
+      </a>
+      </div>
+      {% endfor %}
+
+
+      <!-- Regular Posts Pagination -->
+      <div class="pagination">
+        <span class="step-links">
+          {% if regular_posts.has_previous %}
+          <a href="?page={{ regular_posts.previous_page_number }}">&laquo; first</a>
+          <a href="?page={{ regular_posts.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+            Page {{ regular_posts.number }} of {{ regular_posts.paginator.num_pages }}.
+          </span>
+
+          {% if regular_posts.has_next %}
+          <a href="?page={{ regular_posts.next_page_number }}">next</a>
+          <a href="?page={{ regular_posts.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+        </span>
+      </div>
+
+      <!-- </div> -->
+    </div>
+
+  </div>
+</div>
+<style>
+  .post-label-p {
+    margin: 0;
+  }
+
+  .rounded-orange-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: orange;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+
+  .rounded-blue-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgb(130, 195, 111);
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+
+  .rounded-red-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgb(92, 83, 189);
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+
+  .rounded-green-rectangle {
+    display: inline-flex;
+    align-items: center;
+    background-color: rgb(212, 69, 126);
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  }
+</style>
+{% endblock %}

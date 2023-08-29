@@ -1,0 +1,8 @@
+{% if request.user.is_authenticated %}
+<div class="footer-color rounded-bottom container-sm" style="border: 1px solid black;">
+    <p class="text-color-sand">Built by the 2023 ACE-BCIT team 🚀</p>
+    {% include "partials/subscribe.html" %}
+{% else %}
+<p class="text-center">Built by the 2023 ACE-BCIT team 🚀</p>
+{% endif %}
+</div>

@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block "content" %}
+
+<div class="container post-header border border-secondary" style="padding:0; border: 0;">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- <div class="container"> -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="content" class="content content-full-width">
+                        <div class="profile">
+                            <div class="profile-header bg-light">
+                                <div class="profile-header-cover"></div>
+
+                                <div class="profile-header-content">
+                                    <div class="profile-header-info">
+                                        <h3 class="m-t-10 m-b-5">{{user}}</h3>
+
+                                        <a href="{% url 'password_reset' %}" class="btn btn-xs btn-outline-light" style="margin-top:2.5rem">Reset Password</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-content">
+                            <div class="tab-content p-0">
+                                <div class="tab-pane fade in active show" id="profile-about">
+                                    <div class="table-responsive">
+                                        <table class="table table-profile">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <h3 style="word-wrap: break-word;">About Me:</h3>
+                                                        <span style="font-weight: lighter;">
+                                                            <!-- loads the about me -->
+                                                            {{about_me |safe}}
+                                                        </span>
+
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+
+                                        </table>
+                                        <div style="display: flex; justify-content:end;">
+                                            <a href="{% url 'profile:edit_profile' %}" class="btn btn-xs btn-success">Edit Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

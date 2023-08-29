@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block "content" %}
+<div class="container post-header border border-secondary">
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.search_terms.id_for_label }}">What would you like to search?:</label>
+            <br>
+            {{form.search_terms}}
+
+            <label for="{{ form.search_categories.id_for_label }}">Select where you would like to search:</label>
+            {% for checkbox in form.search_categories %}
+            <div class="form-check">
+                {{ checkbox }}
+                <label class="form-check-label" for="{{ checkbox.id_for_label }}">{{ checkbox.label }}</label>
+            </div>
+            {% endfor %}
+            {% if form.search_categories.errors %}
+            <p class="error-message">{{ form.search_categories.errors }}</p>
+            {% endif %}
+            <label for="{{ form.search_labels.id_for_label }}">Select which labels to search:</label>
+            {% for checkbox in form.search_labels %}
+            <div class="form-check">
+                {{ checkbox }}
+                <label class="form-check-label" for="{{ checkbox.id_for_label }}">{{ checkbox.label }}</label>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="container-hor-center">
+            <button type="submit" id="submit-button" class="button-submit">Search</button>
+            <p>
+        </div>
+    </form>
+
+</div>
+
+<script>
+    const form = document.querySelector('form');
+    const categoriesCheckboxes = form.querySelectorAll('[name="search_categories"]');
+    const labelsCheckboxes = form.querySelectorAll('[name="search_labels"]');
+
+    form.addEventListener('submit', (event) => {
+        const checkedCategories = Array.from(categoriesCheckboxes).filter(checkbox => checkbox.checked);
+        const checkedLabels = Array.from(labelsCheckboxes).filter(checkbox => checkbox.checked);
+
+        if (checkedCategories.length === 0 || checkedLabels.length === 0) {
+            event.preventDefault();
+            alert('Please select at least one category and one label.');
+        }
+    });
+</script>
+
+
+<style>
+    .arrow-buttons {
+        background-color: none;
+        width: 2pc;
+        height: 3pc;
+    }
+
+    .post-header {
+        padding-top: 1pc;
+    }
+
+    .buttons-container {
+        display: flex;
+        justify-content: end;
+        padding-top: 1pc
+    }
+
+    .buttons-container .btn-modify {
+        margin-left: 1pc;
+    }
+
+    .buttons-container .btn-modify :hover {
+        color: white;
+        background-color: #c3bcbc;
+    }
+
+    .edit-button:hover {
+        background-color: #6e6e6e;
+        border-color: #6e6e6e;
+    }
+
+    .main-button {
+        background-color: #319593;
+        color: white;
+        border: none;
+    }
+
+    .main-button:hover {
+        background-color: #077a78;
+    }
+
+    .search-term-input {
+        width: 100%;
+        border-radius: 5px;
+        border-color: #c3bcbc;
+    }
+
+    .form-group {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button-submit {
+        border-radius: 10px;
+    }
+
+    .container-hor-center {
+        text-align: center;
+    }
+</style>
+
+
+
+{% endblock %}
