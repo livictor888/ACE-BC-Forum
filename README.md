@@ -33,3 +33,7 @@ Features to work on, any miscellaneous recommendations for the project
 To check the SQLite database, you can either use a VSCode extension: https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite  
 Or DB Browser: https://sqlitebrowser.org/
 
+# Gallery
+<p align="center">
+  <img src="[image-url](https://github.com/livictor888/ACE-BC-Forum/blob/main/documentation/images/homepage.png)https://github.com/livictor888/ACE-BC-Forum/blob/main/documentation/images/homepage.png" alt="Alt Text" width="300" height="200">
+</p>
